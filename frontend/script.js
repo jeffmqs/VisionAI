@@ -1,3 +1,6 @@
+
+const NGROK_BACKEND_URL = "https://934b-34-87-25-210.ngrok-free.app";
+
 document.getElementById("image-form").addEventListener("submit", async (e) => {
     e.preventDefault();
 
@@ -17,9 +20,9 @@ document.getElementById("image-form").addEventListener("submit", async (e) => {
     responseDiv.textContent = "Processando...";
 
     try {
-        const response = await fetch("https://fbe4-34-83-105-117.ngrok-free.app/process-image", {
+        const response = await fetch(`${NGROK_BACKEND_URL}/process-image`, {
             method: "POST",
-            body: formData
+            body: formData,
         });
 
         if (!response.ok) {
