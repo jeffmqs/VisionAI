@@ -20,7 +20,7 @@ document.getElementById("image-form").addEventListener("submit", async (e) => {
     responseDiv.textContent = "Processando...";
 
     try {
-        const response = await fetch(`${NGROK_BACKEND_URL}/process-image`, {
+        const response = await fetch("https://4aaf-34-16-210-150.ngrok-free.app/process-image", {
             method: "POST",
             body: formData,
         });
