@@ -7,6 +7,7 @@ body {
     align-items: center;
     height: 100vh;
     background-color: #f0f0f5;
+    flex-direction: column;
 }
 
 .container {
@@ -15,6 +16,9 @@ body {
     padding: 20px;
     border-radius: 10px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    width: 100%;
+    max-width: 600px;  /* Limita a largura do container */
+    overflow: hidden;  /* Evita que conteúdo ultrapasse as bordas */
 }
 
 form {
@@ -44,4 +48,24 @@ button:hover {
     margin-top: 20px;
     font-size: 18px;
     color: #333;
+    word-wrap: break-word; /* Evita que o texto se sobreponha */
+}
+
+#image-preview-container {
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;  /* Centraliza a imagem horizontalmente */
+    align-items: center;      /* Centraliza verticalmente, se necessário */
+    width: 100%;
+    height: auto;
+}
+
+#image-preview {
+    max-width: 100%;  /* A imagem não ultrapassa a largura do contêiner */
+    max-height: 200px;  /* Limita a altura da imagem para que ela não ocupe demais o espaço */
+    width: auto;
+    height: auto;
+    object-fit: contain;  /* Garante que a imagem se ajuste ao contêiner mantendo a proporção */
+    border-radius: 8px;
+    display: block;  /* Garantir que a imagem seja tratada como um bloco */
 }
