@@ -1,76 +1,71 @@
+# aqui está instalando dependências necessárias
+#!pip install flask flask-cors transformers torch pillow pyngrok --quiet (para usar no collab. no vs code da erro por isso está comentado)
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 import torch
 from PIL import Image
 from transformers import MllamaForConditionalGeneration, AutoProcessor
+from pyngrok import ngrok
+import re  
 
-# Configuração do aplicativo Flask
+#configurando o flask
 app = Flask(__name__)
-CORS(app)
+CORS(app)  #e aqui to permitindoo o cors para todas as origens
 
-# Mensagem de status para indicar o carregamento do modelo
 print("Carregando o modelo...")
 
-# Definir o ID do modelo e o token Hugging Face
+# aqui o modelo e o token pra liberar o modelo da ia
 model_id = "meta-llama/Llama-3.2-11B-Vision-Instruct"
-token = "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"  # Substitua pelo token correto
+hf_token = "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" 
 
-# Configurar o diretório de offloading
 offload_folder = "./offload"
 
 try:
-    # Carregar o modelo com configuração de dispositivo e offloading
     if torch.cuda.is_available():
-        print("CUDA disponível. Carregando o modelo na GPU...")
+        print("GPU disponível. Carregando o modelo na GPU...")
         model = MllamaForConditionalGeneration.from_pretrained(
             model_id,
-            torch_dtype=torch.float16,
+            torch_dtype=torch.float16,  # Reduzir consumo de memória
             device_map="auto",
-            token=token
+            use_auth_token=hf_token
         )
     else:
-        print("CUDA não disponível. Carregando o modelo usando CPU...")
+        print("CUDA indisponível. Carregando no CPU...")
         model = MllamaForConditionalGeneration.from_pretrained(
             model_id,
             torch_dtype=torch.bfloat16,
             device_map="auto",
-            offload_folder=offload_folder,  # Diretório para offloading
+            offload_folder=offload_folder, 
             offload_state_dict=True,
-            token=token
+            use_auth_token=hf_token
         )
 
-    # Carregar o processador
     processor = AutoProcessor.from_pretrained(
         model_id,
-        token=token
+        use_auth_token=hf_token
     )
-
-    print("Modelo e processador carregados com sucesso!")
+    print("Modelo e processador carregados com sucesso.")
 
 except Exception as e:
-    print("Erro ao carregar o modelo ou o processador:", str(e))
+    print(f"Erro ao carregar o modelo ou o processador: {e}")
     exit(1)
 
-# Rota para processar imagem e texto
+#rota inicial pra verificar se o back roda
+@app.route("/")
+def index():
+    return jsonify({"message": "VisionAI Assist Backend is running."})
+
+#processamento da imagem
 @app.route("/process-image", methods=["POST"])
 def process_image():
     try:
-        print("Requisição recebida no backend!")
-
-        # Validar se os dados estão presentes
-        if "image" not in request.files or "text" not in request.form:
-            return jsonify({"error": "Faltam dados na requisição (image ou text)."}), 400
-
-        # Receber a imagem e o texto do frontend
+        #recebimento da imagem pelo front end e da pergunta tambem
         image_file = request.files["image"]
         user_text = request.form["text"]
 
-        # Abrir a imagem
-        print("Abrindo imagem recebida...")
+        print("Abrindo a imagem recebida...")
         image = Image.open(image_file)
 
-        # Preparar entrada para o modelo
-        print("Preparando entrada para o modelo...")
         messages = [
             {"role": "user", "content": [
                 {"type": "image"},
@@ -85,23 +80,30 @@ def process_image():
             return_tensors="pt"
         ).to(model.device)
 
-        # Gerar resposta
+        #gerar respostta modelo (se você perceber, durante o processamento da imagem no frontend o backend entrega essa saída aqui no colab)
         print("Gerando resposta do modelo...")
-        output = model.generate(**inputs, max_new_tokens=30)
+        output = model.generate(**inputs, max_new_tokens=100)
         response_text = processor.decode(output[0])
 
-        print("Resposta gerada com sucesso!")
-        return jsonify({"response": response_text})
+        cleaned_response = re.sub(r"<\|.*?\|>", "", response_text).strip()
+        cleaned_response = cleaned_response.replace("user ", "").replace("assistant ", "")
+
+        return jsonify({
+            "question": user_text.strip(),
+            "response": cleaned_response
+        })
 
     except Exception as e:
-        print("Erro ao processar a imagem:", str(e))
+        print(f"Erro ao processar a imagem: {e}")
         return jsonify({"error": str(e)}), 500
 
-# Rota inicial para verificar se o backend está rodando
-@app.route("/")
-def index():
-    return jsonify({"message": "VisionAI Assist Backend is running."})
-
-# Executar o aplicativo Flask
 if __name__ == "__main__":
+
+    ngrok.set_auth_token("2pH1NtNqwrZnC0BgUo8ZEDELD9q_7FCxVEjEPuRzeHJZyyyi6")
+
+
+    public_url = ngrok.connect(5000, bind_tls=True)
+    print(f"Servidor backend exposto em: {public_url}")
+
+
     app.run(host="0.0.0.0", port=5000)

@@ -1,5 +1,22 @@
-
 const NGROK_BACKEND_URL = "https://934b-34-87-25-210.ngrok-free.app";
+
+document.getElementById("image").addEventListener("change", function(e) {
+    const file = e.target.files[0];
+    const previewImage = document.getElementById("image-preview");
+    const previewContainer = document.getElementById("image-preview-container");
+
+    if (file) {
+        const reader = new FileReader();
+
+
+        reader.onload = function(event) {
+            previewImage.src = event.target.result;
+            previewContainer.style.display = "block";  
+        };
+
+        reader.readAsDataURL(file); 
+    }
+});
 
 document.getElementById("image-form").addEventListener("submit", async (e) => {
     e.preventDefault();
@@ -20,7 +37,8 @@ document.getElementById("image-form").addEventListener("submit", async (e) => {
     responseDiv.textContent = "Processando...";
 
     try {
-        const response = await fetch("https://4aaf-34-16-210-150.ngrok-free.app/process-image", {
+        /*no fetch está o link que usamos quando demos o run no back do collab. toda vez que for dado um run novo no collab, deve-se colar novamente no campo fetch LINK/process-image */
+        const response = await fetch(`https://7b7c-35-230-88-174.ngrok-free.app/process-image`, {
             method: "POST",
             body: formData,
         });
@@ -30,7 +48,11 @@ document.getElementById("image-form").addEventListener("submit", async (e) => {
         }
 
         const data = await response.json();
-        responseDiv.textContent = data.response || "Resposta não disponível.";
+
+
+        responseDiv.innerHTML = `
+            <p><strong>Resposta:</strong> ${data.response || "Resposta não disponível."}</p>
+        `;
     } catch (error) {
         responseDiv.textContent = "Erro: " + error.message;
     }
