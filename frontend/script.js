@@ -37,7 +37,8 @@ document.getElementById("image-form").addEventListener("submit", async (e) => {
     responseDiv.textContent = "Processando...";
 
     try {
-        const response = await fetch(`https://7dfd-34-87-106-188.ngrok-free.app/process-image`, {
+        /*no fetch está o link que usamos quando demos o run no back do collab. toda vez que for dado um run novo no collab, deve-se colar novamente no campo fetch LINK/process-image */
+        const response = await fetch(`https://7b7c-35-230-88-174.ngrok-free.app/process-image`, {
             method: "POST",
             body: formData,
         });
