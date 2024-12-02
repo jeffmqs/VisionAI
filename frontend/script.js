@@ -8,13 +8,13 @@ document.getElementById("image").addEventListener("change", function(e) {
     if (file) {
         const reader = new FileReader();
 
-        // Carregar e exibir a imagem
+
         reader.onload = function(event) {
             previewImage.src = event.target.result;
-            previewContainer.style.display = "block";  // Exibe o contêiner da imagem
+            previewContainer.style.display = "block";  
         };
 
-        reader.readAsDataURL(file);  // Lê a imagem como uma URL base64
+        reader.readAsDataURL(file); 
     }
 });
 
@@ -48,7 +48,7 @@ document.getElementById("image-form").addEventListener("submit", async (e) => {
 
         const data = await response.json();
 
-        // Mostrar apenas a resposta da IA no frontend
+
         responseDiv.innerHTML = `
             <p><strong>Resposta:</strong> ${data.response || "Resposta não disponível."}</p>
         `;

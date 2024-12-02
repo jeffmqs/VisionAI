@@ -17,8 +17,8 @@ body {
     border-radius: 10px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
     width: 100%;
-    max-width: 600px;  /* Limita a largura do container */
-    overflow: hidden;  /* Evita que conteúdo ultrapasse as bordas */
+    max-width: 600px; 
+    overflow: hidden;  
 }
 
 form {
@@ -48,24 +48,23 @@ button:hover {
     margin-top: 20px;
     font-size: 18px;
     color: #333;
-    word-wrap: break-word; /* Evita que o texto se sobreponha */
+    word-wrap: break-word; 
 }
 
 #image-preview-container {
     margin-top: 20px;
     display: flex;
-    justify-content: center;  /* Centraliza a imagem horizontalmente */
-    align-items: center;      /* Centraliza verticalmente, se necessário */
+    justify-content: center;  
+    align-items: center;    
     width: 100%;
     height: auto;
 }
 
 #image-preview {
-    max-width: 100%;  /* A imagem não ultrapassa a largura do contêiner */
-    max-height: 200px;  /* Limita a altura da imagem para que ela não ocupe demais o espaço */
-    width: auto;
+    max-width: 100%; 
+    max-height: 200px;
     height: auto;
-    object-fit: contain;  /* Garante que a imagem se ajuste ao contêiner mantendo a proporção */
+    object-fit: contain;  
     border-radius: 8px;
-    display: block;  /* Garantir que a imagem seja tratada como um bloco */
+    display: block;  
 }
