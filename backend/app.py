@@ -1,4 +1,5 @@
 # aqui está instalando dependências necessárias
+#!pip install flask flask-cors transformers torch pillow pyngrok --quiet (para usar no collab. no vs code da erro por isso está comentado)
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 import torch
